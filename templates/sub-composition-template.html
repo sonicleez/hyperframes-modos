@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{SCENE_NAME}}</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    [data-composition-id="{{SCENE_ID}}"] {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <template id="{{SCENE_ID}}-template">
+    <div data-composition-id="{{SCENE_ID}}" data-width="1920" data-height="1080">
+
+      <!-- Scene content here -->
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        (function() {
+          var SLOT_DURATION = {{DURATION}};
+
+          var tl = gsap.timeline({ paused: true });
+
+          // Entrance animations — gsap.from() only (NO gsap.to() for exits unless this is the final scene)
+          // tl.from('#el', { y: 40, opacity: 0, duration: 0.5, ease: 'power2.out' }, 0.2);
+
+          // Duration anchor — Law 11
+          tl.to({}, { duration: SLOT_DURATION }, 0);
+
+          window.__timelines = window.__timelines || {};
+          window.__timelines['{{SCENE_ID}}'] = tl;
+        })();
+      </script>
+    </div>
+  </template>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "1.0.0",
+  "description": "{{DESCRIPTION}}",
+  "composition": {
+    "id": "{{COMPOSITION_ID}}",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  }
+}

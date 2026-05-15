@@ -1,0 +1,127 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"title","type":"string","label":"Title","default":"Your Title"},
+  {"id":"subtitle","type":"string","label":"Subtitle","default":"Your subtitle here"},
+  {"id":"accentColor","type":"color","label":"Accent Color","default":"#37bdf8"}
+]'>
+<head>
+  <meta charset="utf-8">
+  <title>{{PROJECT_NAME}}</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    [data-composition-id="root"] {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: #0a0a0a;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+    }
+
+    /* Ambient background */
+    .bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 40%, rgba(20,25,40,1) 0%, rgba(6,8,14,1) 100%);
+    }
+
+    .bg-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+    }
+
+    /* Content layout — hero frame first */
+    .scene-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      padding: 120px 160px;
+      gap: 24px;
+    }
+
+    .title {
+      font-size: 120px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .subtitle {
+      font-size: 36px;
+      font-weight: 400;
+      opacity: 0.7;
+      text-align: center;
+    }
+
+    .accent-line {
+      width: 80px;
+      height: 4px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div data-composition-id="root" data-start="0" data-width="1920" data-height="1080">
+    <!-- Ambient background -->
+    <div class="bg-gradient clip" data-start="0" data-duration="10" data-track-index="0"></div>
+    <div class="bg-vignette clip" data-start="0" data-duration="10" data-track-index="0"></div>
+
+    <!-- Main content -->
+    <div class="scene-content clip" data-start="0.3" data-duration="9" data-track-index="1">
+      <h1 class="title" id="main-title">Your Title</h1>
+      <div class="accent-line" id="accent-line"></div>
+      <p class="subtitle" id="main-subtitle">Your subtitle here</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      (function() {
+        var SLOT_DURATION = 10;
+
+        // Read variables (for parametrized rendering)
+        var vars = window.__hyperframes && window.__hyperframes.getVariables
+          ? window.__hyperframes.getVariables()
+          : {};
+
+        // Apply variables
+        if (vars.title) document.getElementById('main-title').textContent = vars.title;
+        if (vars.subtitle) document.getElementById('main-subtitle').textContent = vars.subtitle;
+        if (vars.accentColor) {
+          document.getElementById('accent-line').style.background = vars.accentColor;
+        }
+
+        var tl = gsap.timeline({ paused: true });
+
+        // Entrance animations (from invisible TO CSS position)
+        tl.from('#main-title', {
+          y: 60, opacity: 0, duration: 0.7, ease: 'power3.out'
+        }, 0);
+
+        tl.from('#accent-line', {
+          scaleX: 0, opacity: 0, duration: 0.5, ease: 'power2.out'
+        }, 0.3);
+
+        tl.from('#main-subtitle', {
+          y: 40, opacity: 0, duration: 0.5, ease: 'power2.out'
+        }, 0.5);
+
+        // Duration anchor — Law 11
+        tl.to({}, { duration: SLOT_DURATION }, 0);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines['root'] = tl;
+      })();
+    </script>
+  </div>
+</body>
+</html>
