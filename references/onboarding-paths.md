@@ -100,9 +100,20 @@ If user picked a style in Step 2 (brand-driven), skip this selection. Use their 
 
 If user just wants to go NOW — use the default template for their path:
 ```bash
-npx hyperframes init my-project && cd my-project
-cp ~/.hermes/skills/hyperframes-modos/templates/<template>.html index.html
+npx hyperframes init my-project
+cd my-project
+
+# Chọn template theo hướng:
+# make-a-video (promo/explainer/demo):
+cp ~/.hermes/skills/hyperframes-modos/templates/composition-template.html index.html
+# short-form (9:16 dọc):
+cp ~/.hermes/skills/hyperframes-modos/templates/short-form-9-16-template.html index.html
+# trailer (16:9 high-tempo):
+cp ~/.hermes/skills/hyperframes-modos/templates/trailer-high-tempo.html index.html
+
 npx hyperframes preview
+mkdir -p renders
+npx hyperframes render --quality standard --output renders/final.mp4
 ```
 
 ---
@@ -141,7 +152,7 @@ Additionally — if brand info was collected in Step 2:
 - `references/render-contract.md` ← quality gates
 
 **Sub-path promo:** also load `references/transitions.md`, `references/house-style.md`
-**Sub-path explainer:** also load `references/narration.md`, `references/caption-system.md`
+**Sub-path explainer:** also load `references/narration.md`, `references/captions.md`
 **Sub-path demo:** also load `references/patterns.md` (PiP, title cards)
 **Sub-path general:** load all of the above — full make-a-video
 
@@ -169,7 +180,7 @@ Additionally — if brand info was collected in Step 2:
 
 **References to load:**
 - `references/short-form-playbook.md` ← THE core reference
-- `references/caption-system.md` ← karaoke captions
+- `references/captions.md` ← karaoke captions
 - `references/transcript-guide.md` ← Whisper transcription
 - `references/composition-scaffold.md` ← sub-comp pattern
 - `references/render-contract.md` ← quality gates
@@ -209,7 +220,7 @@ Additionally — if brand info was collected in Step 2:
 **References to SKIP:**
 - `references/make-a-video.md`
 - `references/short-form-playbook.md`
-- `references/caption-system.md`
+- `references/captions.md`
 
 ---
 
@@ -227,7 +238,7 @@ Additionally — if brand info was collected in Step 2:
 
 2. Second load (on demand — ask what the user needs):
    - Animation? → `references/audio-reactive.md`, `references/techniques.md`, `references/css-patterns.md`, `references/dynamic-techniques.md`
-   - Captions? → `references/caption-system.md`, `references/transcript-guide.md`, `references/tts.md`
+   - Captions? → `references/captions.md`, `references/transcript-guide.md`, `references/tts.md`
    - Transitions? → `references/transitions.md`, `references/transitions/`
    - Typography? → `references/typography.md`
    - Short-form? → `references/short-form-playbook.md`
@@ -241,33 +252,23 @@ Additionally — if brand info was collected in Step 2:
 After picking a path, run the environment check. Only check what matters:
 
 ```bash
-# All paths
-node -v          # Need >= 22
-npx hyperframes --version  # CLI installed?
+# All paths — Node.js (cần phiên bản 22 trở lên)
+node -v
+# Nếu chưa có: brew install node (macOS) hoặc tải tại https://nodejs.org
 
-# Paths that render video (all except developer-learn)
-ffmpeg -version 2>/dev/null | head -1  # Need for render
+# All paths — HyperFrames CLI
+npx hyperframes --version
+# Nếu chưa có: npx hyperframes init first-project (tự cài khi chạy lần đầu)
 
-# Short-form + make-a-video (need transcription)
-which whisper 2>/dev/null || echo "whisper not found — npx hyperframes transcribe will use local model"
-```
-
-Tell the user what's missing and how to install:
-
-```bash
-# Node.js
-brew install node    # macOS
-# or: https://nodejs.org
-
-# HyperFrames CLI
-npx hyperframes init first-project   # auto-installs on first run
-
-# FFmpeg (render path only)
-brew install ffmpeg
+# Paths that render video (make-a-video, short-form, trailer):
+which ffmpeg || echo "⚠️  FFmpeg chưa cài — cần để xuất video MP4"
+# macOS: brew install ffmpeg
+# Windows: tải tại https://ffmpeg.org/download.html
+# Linux: sudo apt install ffmpeg
 
 # Chrome/Chromium (render path)
-# Already installed on most macOS — check:
-ls /Applications/Google\ Chrome.app 2>/dev/null && echo "OK" || echo "Install Chrome for rendering"
+# macOS: ls "/Applications/Google Chrome.app" || echo "⚠️  Cài Chrome tại https://google.com/chrome"
+# Linux: which google-chrome || which chromium-browser || echo "⚠️  Cài Chrome"
 ```
 
 ---

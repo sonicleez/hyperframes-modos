@@ -1,7 +1,7 @@
 ---
 name: hyperframes-modos
 description: Modos Media AI Solution Production skill — HyperFrames video creation with onboarding, brand identity intake, template/style selection, and 4 production paths (make-a-video, short-form, trailer, developer). Use when creating any HTML-based video content, adding captions, generating TTS, building short-form vertical videos, or producing a complete video from concept to MP4.
-version: 1.2.0
+version: 1.3.0
 author: Modos Media
 license: MIT
 metadata:
@@ -28,9 +28,61 @@ Combines the **official HyperFrames framework** (heygen-com/hyperframes — mult
 
 **Modos Media** — tiền thân team Media Ninety Eight (NE). Sản xuất nội dung media truyền thông global cho NE và các sản phẩm thuộc Ecosystem NE. Hiện tập trung vào **AI Solution Production**. Liên hệ hợp tác: **info@Modos.space**
 
-**MANDATORY:** When a user invokes this skill for the first time (or asks "where do I start?", "help me make a video", "I want to try HyperFrames"), run the onboarding BEFORE loading any references. Do NOT dump the entire skill into context.
+### Thuật ngữ (Glossary)
 
-### Step 1: Pick a Path
+| Thuật ngữ | Giải thích |
+|-----------|-----------|
+| **Composition** | Trang HTML chứa toàn bộ video — giống như một "kịch bản hình ảnh" |
+| **Render** | Biến mã HTML thành file video MP4 |
+| **Scaffold** | Bộ khung sẵn có, chỉ cần điền nội dung vào |
+| **Sub-composition** | Một đoạn nhỏ trong video, giống như một "cảnh" riêng |
+| **npx** | Lệnh chạy chương trình Node.js mà không cần cài đặt vĩnh viễn |
+| **GSAP** | Thư viện JavaScript tạo hiệu ứng chuyển động (animation) |
+| **MP4** | Định dạng video phổ biến nhất, xem được trên mọi thiết bị |
+| **fps** | Khung hình/giây (frames per second). 30fps = 30 hình/giây |
+| **Aspect ratio** | Tỷ lệ khung hình. 16:9 = ngang (YouTube), 9:16 = dọc (TikTok/Reels) |
+| **FFmpeg** | Công cụ xử lý video (cần để xuất MP4). Kiểm tra: `ffmpeg -version` |
+| **ffprobe** | Công cụ kiểm tra thông tin video (thời lượng, độ phân giải) |
+| **Hex code** | Mã màu web. Ví dụ: `#FF0000` = màu đỏ |
+| **Karaoke captions** | Phụ đề sáng dần theo từng từ (như karaoke) |
+| **Gate** | Bước kiểm tra chất lượng trong quy trình 8-gate |
+| **design.md** | File ghi lại màu sắc, font, phong cách của thương hiệu |
+| **Template** | Mẫu HTML sẵn có để tạo video nhanh |
+| **lint** | Kiểm tra lỗi cấu trúc HTML/composition |
+| **preview** | Xem video trong trình duyệt trước khi xuất MP4 |
+
+**MANDATORY:** When a user invokes this skill for the first time (or asks "where do I start?", "help me make a video", "I want to try HyperFrames"), run Step 0 first, then the onboarding. Do NOT dump the entire skill into context.
+
+### Step 0: Kiểm tra máy tính (Prerequisites)
+
+Kiểm tra trước khi bắt đầu. Nếu thiếu cái gì, cài rồi tiếp tục.
+
+```bash
+# Kiểm tra Node.js (cần phiên bản 22 trở lên)
+node -v
+# Nếu chưa có hoặc phiên bản cũ:
+#   macOS:  brew install node
+#   Windows: Tải tại https://nodejs.org (chọn LTS)
+#   Linux:   curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt install -y nodejs
+
+# Kiểm tra FFmpeg (cần để xuất video MP4)
+which ffmpeg || echo "⚠️  FFmpeg chưa cài — không xuất được MP4"
+#   macOS:  brew install ffmpeg
+#   Windows: Tải tại https://ffmpeg.org/download.html
+#   Linux:   sudo apt install ffmpeg
+
+# Kiểm tra Google Chrome (cần để render)
+#   macOS:  ls "/Applications/Google Chrome.app" || echo "⚠️  Cài Chrome tại https://google.com/chrome"
+#   Linux:  which google-chrome || which chromium-browser || echo "⚠️  Cài Chrome"
+#   Windows: Chrome tự động có mặt nếu đã cài
+
+# Kiểm tra HyperFrames CLI
+npx hyperframes --version || echo "⚠️  Chạy 'npx hyperframes init first-project' để cài CLI"
+```
+
+Nếu tất cả đều OK, tiếp tục Step 1. Nếu thiếu, cài theo hướng dẫn trên rồi quay lại.
+
+### Step 1: Chọn hướng (Pick a Path)
 
 Ask the user ONE question with these choices (adapt to user's language):
 
@@ -40,29 +92,33 @@ Ask the user ONE question with these choices (adapt to user's language):
 > 2. **Video dọc ngắn** TikTok/Reels/Shorts có face-cam + karaoke captions
 > 3. **Trailer** từ video clips có sẵn (high-tempo edit)
 > 4. **Developer** — tìm hiểu framework, viết composition thủ công
+>
+> *Nếu chưa chắc, chọn 1 — hệ thống sẽ hướng dẫn bạn từng bước.*
 
 | Choice | Path | What happens |
 |--------|------|--------------|
-| 1 | `make-a-video` | Full 8-gate interview → build workflow. Ask follow-up: promo / explainer / demo / general? |
-| 2 | `short-form` | Face-cam workflow: audio-first → transcribe → 4-layer scaffold → captions |
-| 3 | `trailer` | Analyze clips → storyboard → flash transitions → render |
-| 4 | `developer` | Full framework reference load, progressive deep-dive by topic |
+| 1 | `make-a-video` | Quy trình 8 bước từ phỏng vấn → tạo video. Hỏi thêm: promo (quảng cáo) / explainer (giải thích) / demo (thử nghiệm) / general (tổng hợp)? |
+| 2 | `short-form` | Quy trình quay mặt + âm thanh trước → tự động tạo phụ đề. Cần có file video gốc |
+| 3 | `trailer` | Phân tích clips → tạo storyboard → chuyển cảnh nhanh → xuất MP4. Cần có thư mục chứa video clips |
+| 4 | `developer` | Dành cho lập trình viên — tải toàn bộ tài liệu, tự viết composition bằng HTML/CSS/GSAP |
 
 ### Step 2: Brand Identity
 
 Ask the user for brand info. This is REQUIRED for paths 1-3 (make-a-video, short-form, trailer). Optional for developer path.
 
 > **Bạn có brand guide không?** (Cung cấp bất kỳ mục nào có sẵn — bỏ qua nếu chưa có)
+>
+> *Nếu chưa có thương hiệu, chọn "Chưa — dùng mặc định". Hệ thống sẽ tự chọn phong cách phù hợp.*
 
 | Info | What to ask | Used for |
 |------|-------------|----------|
 | Brand / Tổ chức | Tên công ty, project, hoặc cá nhân? | Logo text, watermark, outro card |
-| Brand guide / design.md | Có file brand guide, style guide, design.md? → paste path hoặc nội dung | Source of truth cho colors, fonts, spacing — KHÔNG tự chế if có |
-| Logo | Có file logo? → path (SVG/PNG ưa thích) | Outro, watermark, hero frame |
-| Brand colors | Hex codes (primary, accent, background) | Palette — override house-style defaults |
-| Brand fonts | Google Fonts name hoặc file .woff2 paths | Typography — override Inter/JetBrains defaults |
+| Brand guide / design.md | Có file brand guide, style guide, design.md không? → paste path hoặc nội dung | Source of truth cho colors, fonts, spacing — KHÔNG tự chế if có |
+| Logo | Có file logo không? → path (SVG/PNG ưa thích) | Outro, watermark, hero frame |
+| Brand colors | Mã màu hex (ví dụ: #FF0000 = đỏ). Primary, accent, background | Palette — override house-style defaults |
+| Brand fonts | Tên Google Fonts hoặc đường dẫn file .woff2 | Typography — override Inter/JetBrains defaults |
 | Visual mood | Dark/light? Cinematic/clean/kinetic/minimal? | Maps to visual-styles.md preset (8 styles) |
-| Logo animation | Logo cần animate kiểu gì? (fade-in / SLAM / draw-on / morph / none) | Outro card + intro reveal |
+| Logo animation | Logo cần animate kiểu gì? (fade-in: hiện dần / SLAM: bay vào mạnh / draw-on: vẽ nét / morph: biến hình / none: giữ nguyên) | Outro card + intro reveal |
 
 **If NO brand info provided:** Use MOTION_PHILOSOPHY defaults from `references/house-style.md`. Auto-pick visual style based on the path chosen:
 
@@ -95,22 +151,45 @@ After Step 2, present template + style options. The user picks a template, and t
 
 | # | Style | Mood | Best for |
 |---|-------|------|----------|
-| 1 | Swiss Pulse | Clinical, precise | SaaS, data, dev tools, metrics |
-| 2 | Velvet Standard | Premium, timeless | Luxury, enterprise, keynotes |
-| 3 | Deconstructed | Industrial, raw | Tech launches, security, punk |
-| 4 | Maximalist Type | Loud, kinetic | Big announcements, launches |
-| 5 | Data Drift | Futuristic, immersive | AI, ML, cutting-edge tech |
-| 6 | Soft Signal | Intimate, warm | Wellness, personal stories, brand |
-| 7 | Folk Frequency | Cultural, vivid | Consumer apps, food, communities |
-| 8 | Shadow Cut | Dark, cinematic | Dramatic reveals, security, exposé |
+| 1 | Swiss Pulse | Sạch sẽ, chính xác (Clinical, precise) | SaaS, data, dev tools, metrics |
+| 2 | Velvet Standard | Sang trọng, cổ điển (Premium, timeless) | Luxury, enterprise, keynotes |
+| 3 | Deconstructed | Công nghiệp, thô (Industrial, raw) | Tech launches, security, punk |
+| 4 | Maximalist Type | Ồn ào, năng động (Loud, kinetic) | Big announcements, launches |
+| 5 | Data Drift | Tương lai, nhập hội (Futuristic, immersive) | AI, ML, cutting-edge tech |
+| 6 | Soft Signal | Gần gũi, ấm áp (Intimate, warm) | Wellness, personal stories, brand |
+| 7 | Folk Frequency | Văn hóa, rực rỡ (Cultural, vivid) | Consumer apps, food, communities |
+| 8 | Shadow Cut | Tối, điện ảnh (Dark, cinematic) | Dramatic reveals, security, exposé |
 
 Full style specs with hex palettes, GSAP easing, shader pairings: `references/visual-styles.md`
 
-**Quick start if user just wants to go:**
+**Quick start — copy template vào project:**
+
 ```bash
-npx hyperframes init my-project && cd my-project
-cp ~/.hermes/skills/hyperframes-modos/templates/<template>.html index.html
+# 1. Tạo project mới
+npx hyperframes init my-project
+cd my-project
+
+# 2. Chọn template theo hướng đã chọn:
+# → make-a-video (promo/explainer/demo):
+cp ~/.hermes/skills/hyperframes-modos/templates/composition-template.html index.html
+
+# → short-form (9:16 dọc):
+cp ~/.hermes/skills/hyperframes-modos/templates/short-form-9-16-template.html index.html
+
+# → trailer (16:9 high-tempo):
+cp ~/.hermes/skills/hyperframes-modos/templates/trailer-high-tempo.html index.html
+
+# → developer (tự viết):
+cp ~/.hermes/skills/hyperframes-modos/templates/composition-template.html index.html
+# Hoặc dùng sub-composition:
+cp ~/.hermes/skills/hyperframes-modos/templates/sub-composition-template.html compositions/scene1.html
+
+# 3. Xem trước trong trình duyệt
 npx hyperframes preview
+
+# 4. Xuất video MP4 (mkdir renders nếu chưa có)
+mkdir -p renders
+npx hyperframes render --quality standard --output renders/final.mp4
 ```
 
 ### Step 4: Load Only What the Path Needs
@@ -124,7 +203,7 @@ Quick summary:
 | Path | SKILL.md sections | Key references |
 |------|-------------------|---------------|
 | make-a-video | Approach, Layout, Data Attrs, Composition, Timeline, Rules, Transitions, Guardrails, Quality, CLI | `make-a-video.md`, `interview-questions.md`, `style-intake.md`, `storyboard-template.md`, `composition-scaffold.md`, `build-checklist.md`, `render-contract.md` |
-| short-form | Short-Form 9:16 Quick Ref, Data Attrs, Composition, Timeline, Rules, 11 Laws, Quality, CLI | `short-form-playbook.md`, `caption-system.md`, `transcript-guide.md`, `composition-scaffold.md`, `render-contract.md`, `house-style.md` |
+| short-form | Short-Form 9:16 Quick Ref, Data Attrs, Composition, Timeline, Rules, 11 Laws, Quality, CLI | `short-form-playbook.md`, `captions.md`, `transcript-guide.md`, `composition-scaffold.md`, `render-contract.md`, `house-style.md` |
 | trailer | Layout, Data Attrs, Composition, Timeline, Rules, Transitions, 11 Laws, Guardrails, Quality, CLI | `trailer-production.md`, `transitions.md`, `transitions/`, `beat-direction.md`, `composition-scaffold.md`, `render-contract.md` |
 | developer | **All sections** | Start with core 5 (`render-contract.md`, `composition-scaffold.md`, `house-style.md`, `visual-styles.md`, `beat-direction.md`), load rest on demand |
 
@@ -133,26 +212,7 @@ Additionally, if brand info was provided in Step 2:
 - If visual style picked → load `references/visual-styles.md`
 - If custom palette → load relevant `references/palettes/<name>.md`
 
-### Step 5: Environment Check
-
-After picking a path, verify dependencies. Only check what matters for that path:
-
-```bash
-node -v                          # Need >= 22 (all paths)
-npx hyperframes --version        # CLI (all paths)
-ffmpeg -version 2>/dev/null      # Render paths (make-a-video, short-form, trailer)
-# Chrome check — macOS only:
-ls /Applications/Google\ Chrome.app 2>/dev/null
-```
-
-Missing? Quick install:
-```bash
-brew install node          # Node.js
-brew install ffmpeg         # FFmpeg
-npx hyperframes init first-project   # Installs CLI
-```
-
-### Step 6: First Action
+### Step 5: First Action
 
 | Path | First action |
 |------|-------------|
@@ -185,12 +245,12 @@ Read `design.md` or `DESIGN.md` first (check both casings). It's the source of t
 If no `design.md` exists, offer the user a choice:
 
 1. **User named a style or mood?** → Read [visual-styles.md](references/visual-styles.md) for the 8 named presets (Swiss Pulse, Velvet Standard, Deconstructed, Maximalist Type, Data Drift, Soft Signal, Folk Frequency, Shadow Cut).
-2. **Want to browse options visually?** → Use [references/design-picker.md](references/design-picker-external.md) to serve a visual picker page.
+2. **Want to browse options visually?** → Use [references/design-picker.md](references/design-picker.md) to serve a visual picker page.
 3. **Want to skip and go fast?** → Ask: mood, light or dark, any brand colors/fonts? Then pick from [house-style.md](references/house-style.md) defaults.
 
 ### Step 2: Prompt expansion
 
-Always run on every new composition (except trivial edits). Read [references/prompt-expansion.md](references/prompt-expansion-external.md) for the full process and output format.
+Always run on every new composition (except trivial edits). Read [references/prompt-expansion.md](references/prompt-expansion.md) for the full process and output format.
 
 ### Step 3: Plan
 
@@ -198,7 +258,7 @@ Before writing HTML:
 
 1. **What** — narrative arc, key moments, emotional beats
 2. **Structure** — compositions, sub-compositions, tracks
-3. **Rhythm** — declare scene rhythm before implementing. Read [references/beat-direction.md](references/beat-direction-external.md) for templates
+4. **Rhythm** — declare scene rhythm before implementing. Read [references/beat-direction.md](references/beat-direction.md) for templates
 4. **Timing** — which clips drive duration, where transitions land
 5. **Layout** — build end-state first (see "Layout Before Animation" below)
 6. **Animate** — then add motion
@@ -486,7 +546,7 @@ npx hyperframes doctor             # Check environment (Node, FFmpeg, Chrome)
 
 HyperFrames supports multiple animation runtimes via the Frame Adapter pattern:
 
-- **GSAP** — primary, see `/gsap` skill for patterns and effects
+- **GSAP** — primary runtime. See [references/gsap-core.md](references/gsap-core.md) for contract + methods and [references/gsap-effects.md](references/gsap-effects.md) for patterns and presets
 - **Anime.js** — see `/animejs` skill
 - **Lottie** — see `/lottie` skill
 - **Three.js** — see `/three` skill
@@ -523,7 +583,6 @@ All runtimes register paused, seekable timelines for deterministic rendering.
 - **[references/render-contract.md](references/render-contract.md)** — 11 binding Render Contract rules, composition structure, variables, quality verification (lint/validate/inspect/contrast/animation-map/visual-verification-gate).
 - **[references/short-form-playbook.md](references/short-form-playbook.md)** — Complete 9:16 vertical video: 4-layer scaffold, face-mode choreography (BOTTOM/FULLSCREEN/HIDDEN), audio-sync protocol, karaoke captions, retime protocol, lessons from may-shorts-18 v1→v2, 10 quality rules.
 - **[references/make-a-video.md](references/make-a-video.md)** — 8-gate end-to-end production workflow: interview → brief → storyboard → build → preview → render. Two mandatory preview gates.
-- **[references/caption-system.md](references/caption-system.md)** — Karaoke caption implementation: per-word `<span>` elements, data-word-start, GSAP tweens, tone-adaptive style detection, text overflow prevention, caption exit guarantees.
 - **[references/trailer-production.md](references/trailer-production.md)** — Trailer production from existing clips: analyze videos, storyboard (high-tempo 30s pattern), track layout, flash transitions, common lint errors and fixes, render+verify workflow.
 
 ### Design & Style
@@ -547,7 +606,7 @@ All runtimes register paused, seekable timelines for deterministic rendering.
 
 ### Composition & Transitions
 - **[references/transitions.md](references/transitions.md)** — Scene transitions overview: crossfades, wipes, reveals, shader transitions. Energy/mood selection, CSS vs WebGL guidance.
-- **[references/transitions/](references/transitions/)** — 12 per-type transition guides (catalog, css-3d, blur, cover, destruction, dissolution, distortion, grid, light, mechanical, push, radial, scale).
+- **[references/transitions/](references/transitions/)** — 14 transition type guides (catalog overview + css-3d, css-blur, css-cover, css-destruction, css-dissolve, css-distortion, css-grid, css-light, css-mechanical, css-other, css-push, css-radial, css-scale).
 - **[references/video-composition.md](references/video-composition.md)** — Video-medium rules: density, color presence, scale, frame composition, design.md as brand not layout.
 - **[references/beat-direction.md](references/beat-direction.md)** — Beat planning: concept, mood, choreography verbs, rhythm templates, transition decisions, depth layers.
 - **[references/narration.md](references/narration.md)** — Pacing, tone, script structure, number pronunciation, opening line patterns.
