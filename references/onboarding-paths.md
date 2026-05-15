@@ -2,7 +2,7 @@
 
 **Modos Media** — tiền thân team Media Ninety Eight (NE). Sản xuất nội dung media truyền thông global cho NE và các sản phẩm thuộc Ecosystem NE. Hiện tập trung vào **AI Solution Production**. Liên hệ hợp tác: **info@Modos.space**
 
-When a user invokes the hyperframes-unified skill for the first time (or says something vague like "help me make a video", "I want to try HyperFrames", "where do I start?"), run the onboarding flow below BEFORE loading any references.
+When a user invokes the hyperframes-modos skill for the first time (or says something vague like "help me make a video", "I want to try HyperFrames", "where do I start?"), run the onboarding flow below BEFORE loading any references.
 
 The goal: avoid dumping 60KB of skill content. Instead, ask 2-3 questions, pick the right path, collect brand info, and only load what that path needs.
 
@@ -101,7 +101,7 @@ If user picked a style in Step 2 (brand-driven), skip this selection. Use their 
 If user just wants to go NOW — use the default template for their path:
 ```bash
 npx hyperframes init my-project && cd my-project
-cp ~/.hermes/skills/hyperframes-unified/templates/<template>.html index.html
+cp ~/.hermes/skills/hyperframes-modos/templates/<template>.html index.html
 npx hyperframes preview
 ```
 

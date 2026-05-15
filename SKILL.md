@@ -1,7 +1,7 @@
 ---
 name: hyperframes-modos
 description: Modos Media AI Solution Production skill — HyperFrames video creation with onboarding, brand identity intake, template/style selection, and 4 production paths (make-a-video, short-form, trailer, developer). Use when creating any HTML-based video content, adding captions, generating TTS, building short-form vertical videos, or producing a complete video from concept to MP4.
-version: 1.1.0
+version: 1.2.0
 author: Modos Media
 license: MIT
 metadata:
@@ -17,6 +17,8 @@ by **Modos Media** (tiền thân Media Ninety Eight)
 Sản xuất nội dung media truyền thông global cho NE và Ecosystem NE. Hiện tập trung vào **AI Solution Production**.
 
 Combines the **official HyperFrames framework** (heygen-com/hyperframes — multi-runtime, multi-agent, variables, inspect, design-picker) with the **Student Kit** (nateherkai/hyperframes-student-kit — 11 Laws of Motion Graphics, short-form playbook, karaoke captions, verification gates, make-a-video workflow) into one authoritative skill — extended with Modos Media onboarding, brand identity, and template/style selection.
+
+**What is HyperFrames?** HyperFrames is an open-source HTML-native video framework. You write plain HTML + CSS + GSAP, and the framework renders it as broadcast-quality MP4. Instead of timeline editors or keyframe GUIs, you describe animations in code — every composition is deterministic, inspectable, and version-controllable. Think of it as "video-as-code": `npx hyperframes init my-project`, edit `index.html`, preview in browser, render to MP4. No video editor needed.
 
 **Setup:** `npx skills add heygen-com/hyperframes` installs the framework skills. This skill layers on top — Modos onboarding, brand identity, motion philosophy, short-form patterns, AI gates, and quality checks the framework doesn't include.
 
@@ -107,7 +109,7 @@ Full style specs with hex palettes, GSAP easing, shader pairings: `references/vi
 **Quick start if user just wants to go:**
 ```bash
 npx hyperframes init my-project && cd my-project
-cp ~/.hermes/skills/hyperframes-unified/templates/<template>.html index.html
+cp ~/.hermes/skills/hyperframes-modos/templates/<template>.html index.html
 npx hyperframes preview
 ```
 
@@ -457,16 +459,25 @@ For full details, load [references/make-a-video.md](references/make-a-video.md).
 
 ```bash
 npx hyperframes init <name>       # Create new project
+npx hyperframes init <name> --example    # Init with example composition
+npx hyperframes init <name> --video <url>  # Init with video reference
+npx hyperframes init <name> --audio <url>  # Init with audio reference
+npx hyperframes init <name> --tailwind    # Include Tailwind CSS
 npx hyperframes preview            # Studio preview (localhost:3002, hot-reload)
 npx hyperframes lint               # Static HTML structure check
 npx hyperframes validate           # Runtime check (headless Chrome)
 npx hyperframes inspect            # Visual layout check (overflow, clipping)
-npx hyperframes render             # Render MP4 (draft/standard/high)
+npx hyperframes compositions       # List composition IDs + resolved durations
+npx hyperframes render             # Render MP4 (default: standard quality)
+npx hyperframes render --quality draft    # Fast preview render (~720p, lower bitrate)
+npx hyperframes render --quality standard # Balanced quality (default)
+npx hyperframes render --quality high     # Broadcast quality (1080p+, high bitrate)
 npx hyperframes add <name>         # Install block/component from catalog
 npx hyperframes catalog            # Browse registry
 npx hyperframes transcribe <file>  # Whisper word-level timestamps
 npx hyperframes tts                # Text-to-speech (Kokoro-82M)
-npx hyperframes doctor             # Check environment
+npx hyperframes remove-background <file>  # Remove background from video (u2net)
+npx hyperframes doctor             # Check environment (Node, FFmpeg, Chrome)
 ```
 
 ---
@@ -520,13 +531,12 @@ All runtimes register paused, seekable timelines for deterministic rendering.
 - **[references/visual-styles.md](references/visual-styles.md)** — 8 named visual presets (Swiss Pulse, Velvet Standard, Deconstructed, Maximalist Type, Data Drift, Soft Signal, Folk Frequency, Shadow Cut) with hex palettes, GSAP easing, shader pairings.
 - **[references/palettes/](references/palettes/)** — 9 individual palette files (bold-energetic, clean-corporate, dark-premium, jewel-rich, monochrome, nature-earth, neon-electric, pastel-soft, warm-editorial).
 - **[references/design-picker.md](references/design-picker.md)** — Design picker system: interactive design.md creation, composition variables, brand-driven style generation.
-- **[references/design-picker-external.md](references/design-picker-external.md)** — Visual design picker page for creating design.md interactively.
 - **[templates/design-picker.html](templates/design-picker.html)** — Interactive design picker HTML tool for creating design.md visually.
 - **[references/prompt-expansion.md](references/prompt-expansion.md)** — Prompt expansion process: grounding user intent against design.md and house-style.md, variable inference.
-- **[references/prompt-expansion-external.md](references/prompt-expansion-external.md)** — Prompt expansion (external tool variant).
 
 ### Motion Philosophy
 - **[references/motion-philosophy.md](references/motion-philosophy.md)** — 11 Laws of Motion Graphics from Student Kit: reference timeline, visual vocabulary, color story, motion recipe.
+- **[references/motion-principles.md](references/motion-principles.md)** — Practical guardrails and rules: vary eases/speeds/directions, fromTo vs from, ambient pulse must attach to timeline, hard-kill every scene boundary, load-bearing GSAP constraints.
 
 ### Animation & Motion
 - **[references/audio-reactive.md](references/audio-reactive.md)** — Audio-reactive animation: map frequency bands and amplitude to GSAP properties.
@@ -543,17 +553,18 @@ All runtimes register paused, seekable timelines for deterministic rendering.
 - **[references/narration.md](references/narration.md)** — Pacing, tone, script structure, number pronunciation, opening line patterns.
 - **[references/patterns.md](references/patterns.md)** — PiP, title cards, slide show patterns.
 - **[references/data-in-motion.md](references/data-in-motion.md)** — Data, stats, and infographic patterns.
+- **[references/workspace-layout.md](references/workspace-layout.md)** — Project structure: workspace root, single project layout, key files (index.html, meta.json, hyperframes.json, assets/, compositions/, renders/), CLI usage from project folder, adding new projects.
 
-### Typography & Media
+### Typography & Captions
 - **[references/typography.md](references/typography.md)** — Font pairing, OpenType features, dark-background adjustments, font discovery.
 - **[references/tts.md](references/tts.md)** — Kokoro-82M TTS: voice selection, speed tuning, TTS+captions workflow.
 - **[references/transcript-guide.md](references/transcript-guide.md)** — Whisper transcription: models, .en gotcha, shift() retiming, API fallbacks.
-- **[references/captions.md](references/captions.md)** — Caption system technical reference: per-word spans, data attributes, GSAP tweens, style detection, overflow prevention.
+- **[references/captions.md](references/captions.md)** — Karaoke caption system: per-word `<span>` elements, data-word-start, GSAP tweens, tone-adaptive style detection, text overflow prevention, caption exit guarantees.
 - **[references/audio-reactive.md](references/audio-reactive.md)** — (see Animation & Motion above)
 
 ### GSAP
+- **[references/gsap-core.md](references/gsap-core.md)** — GSAP in HyperFrames: paused timeline contract, `window.__timelines` registration, core tween methods (to/from/fromTo/set), common vars, transform aliases, easing, timelines (position parameter, labels, nesting, playback), performance (transform over layout, will-change, quickTo, stagger), do-not rules.
 - **[references/gsap-effects.md](references/gsap-effects.md)** — GSAP timeline patterns, effect registration, animation presets.
-- **[references/gsap-effects-student.md](references/gsap-effects-student.md)** — Student Kit GSAP effects supplement.
 
 ### Hyperframes Registry
 - **[references/registry-skills.md](references/registry-skills.md)** — Registry overview: installing blocks, components, discovery.
@@ -562,8 +573,7 @@ All runtimes register paused, seekable timelines for deterministic rendering.
 ### Migration & Conversion
 - **[references/website-to-hyperframes.md](references/website-to-hyperframes.md)** — Overview: URL → video composition conversion (7-step process).
 - **[references/website-to-hf/](references/website-to-hf/)** — 7 detailed steps: step-1-capture through step-7-validate.
-- **[references/remotion-to-hyperframes.md](references/remotion-to-hyperframes.md)** — Overview: migrate React Remotion compositions to HTML HyperFrames.
-- **[references/remotion-skills.md](references/remotion-skills.md)** — Full Remotion migration skill reference.
+- **[references/remotion-to-hyperframes.md](references/remotion-to-hyperframes.md)** — Migrate React Remotion compositions to HTML HyperFrames.
 - **[references/remotion/](references/remotion/)** — Remotion sub-references: api-map, escape-hatch, eval, fonts, limitations, lottie, media, parameters, sequencing, timing.
 
 ### Contributing

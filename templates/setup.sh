@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# hyperframes-unified-setup.sh
+# hyperframes-modos-setup.sh
 # One-command setup: installs HyperFrames CLI + copies unified skill templates
-# Usage: curl -sL https://raw.githubusercontent.com/USER/hyperframes-unified/main/setup.sh | bash
+# Usage: curl -sL https://raw.githubusercontent.com/USER/hyperframes-modos/main/setup.sh | bash
 # Or:   bash setup.sh
 
 set -euo pipefail
@@ -57,11 +57,11 @@ echo "  npx hyperframes init"
 echo "  npx hyperframes preview"
 echo ""
 echo "Create from template (16:9 landscape):"
-echo "  cp ~/.hermes/skills/hyperframes-unified/templates/composition-template.html index.html"
+echo "  cp ~/.hermes/skills/hyperframes-modos/templates/composition-template.html index.html"
 echo "  npx hyperframes preview"
 echo ""
 echo "Create from template (9:16 short-form):"
-echo "  cp ~/.hermes/skills/hyperframes-unified/templates/short-form-9-16-template.html index.html"
+echo "  cp ~/.hermes/skills/hyperframes-modos/templates/short-form-9-16-template.html index.html"
 echo "  npx hyperframes preview"
 echo ""
 echo "Useful commands:"
@@ -76,7 +76,7 @@ echo "  npx hyperframes transcribe <file>  # Whisper word-level timestamps"
 echo "  npx hyperframes tts           # Text-to-speech"
 echo ""
 echo "Skill documentation:"
-echo "  ~/.hermes/skills/hyperframes-unified/SKILL.md"
-echo "  ~/.hermes/skills/hyperframes-unified/references/"
+echo "  ~/.hermes/skills/hyperframes-modos/SKILL.md"
+echo "  ~/.hermes/skills/hyperframes-modos/references/"
 echo ""
 echo "Happy video making! 🎬"
