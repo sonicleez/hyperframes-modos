@@ -1,7 +1,7 @@
 ---
 name: hyperframes-modos
 description: Modos Media AI Solution Production skill — HyperFrames video creation with onboarding, brand identity intake, template/style selection, and 4 production paths (make-a-video, short-form, trailer, developer). Use when creating any HTML-based video content, adding captions, generating TTS, building short-form vertical videos, or producing a complete video from concept to MP4.
-version: 1.0.0
+version: 1.1.0
 author: Modos Media
 license: MIT
 metadata:
@@ -519,8 +519,14 @@ All runtimes register paused, seekable timelines for deterministic rendering.
 - **[references/house-style.md](references/house-style.md)** — Default motion, sizing, color palettes, easing signatures when no design.md exists.
 - **[references/visual-styles.md](references/visual-styles.md)** — 8 named visual presets (Swiss Pulse, Velvet Standard, Deconstructed, Maximalist Type, Data Drift, Soft Signal, Folk Frequency, Shadow Cut) with hex palettes, GSAP easing, shader pairings.
 - **[references/palettes/](references/palettes/)** — 9 individual palette files (bold-energetic, clean-corporate, dark-premium, jewel-rich, monochrome, nature-earth, neon-electric, pastel-soft, warm-editorial).
+- **[references/design-picker.md](references/design-picker.md)** — Design picker system: interactive design.md creation, composition variables, brand-driven style generation.
 - **[references/design-picker-external.md](references/design-picker-external.md)** — Visual design picker page for creating design.md interactively.
-- **[references/prompt-expansion-external.md](references/prompt-expansion-external.md)** — Prompt expansion process: grounding user intent against design.md and house-style.md.
+- **[templates/design-picker.html](templates/design-picker.html)** — Interactive design picker HTML tool for creating design.md visually.
+- **[references/prompt-expansion.md](references/prompt-expansion.md)** — Prompt expansion process: grounding user intent against design.md and house-style.md, variable inference.
+- **[references/prompt-expansion-external.md](references/prompt-expansion-external.md)** — Prompt expansion (external tool variant).
+
+### Motion Philosophy
+- **[references/motion-philosophy.md](references/motion-philosophy.md)** — 11 Laws of Motion Graphics from Student Kit: reference timeline, visual vocabulary, color story, motion recipe.
 
 ### Animation & Motion
 - **[references/audio-reactive.md](references/audio-reactive.md)** — Audio-reactive animation: map frequency bands and amplitude to GSAP properties.
@@ -542,7 +548,35 @@ All runtimes register paused, seekable timelines for deterministic rendering.
 - **[references/typography.md](references/typography.md)** — Font pairing, OpenType features, dark-background adjustments, font discovery.
 - **[references/tts.md](references/tts.md)** — Kokoro-82M TTS: voice selection, speed tuning, TTS+captions workflow.
 - **[references/transcript-guide.md](references/transcript-guide.md)** — Whisper transcription: models, .en gotcha, shift() retiming, API fallbacks.
+- **[references/captions.md](references/captions.md)** — Caption system technical reference: per-word spans, data attributes, GSAP tweens, style detection, overflow prevention.
 - **[references/audio-reactive.md](references/audio-reactive.md)** — (see Animation & Motion above)
+
+### GSAP
+- **[references/gsap-effects.md](references/gsap-effects.md)** — GSAP timeline patterns, effect registration, animation presets.
+- **[references/gsap-effects-student.md](references/gsap-effects-student.md)** — Student Kit GSAP effects supplement.
+
+### Hyperframes Registry
+- **[references/registry-skills.md](references/registry-skills.md)** — Registry overview: installing blocks, components, discovery.
+- **[references/registry/](references/registry/)** — Registry sub-references: add-block, add-component, demo-html-pattern, discovery, install-locations, wiring-blocks, wiring-components.
+
+### Migration & Conversion
+- **[references/website-to-hyperframes.md](references/website-to-hyperframes.md)** — Overview: URL → video composition conversion (7-step process).
+- **[references/website-to-hf/](references/website-to-hf/)** — 7 detailed steps: step-1-capture through step-7-validate.
+- **[references/remotion-to-hyperframes.md](references/remotion-to-hyperframes.md)** — Overview: migrate React Remotion compositions to HTML HyperFrames.
+- **[references/remotion-skills.md](references/remotion-skills.md)** — Full Remotion migration skill reference.
+- **[references/remotion/](references/remotion/)** — Remotion sub-references: api-map, escape-hatch, eval, fonts, limitations, lottie, media, parameters, sequencing, timing.
+
+### Contributing
+- **[references/contribute-templates.md](references/contribute-templates.md)** — Catalog contribution templates and guidelines.
+
+### Scripts (Tooling)
+- **[scripts/animation-map.mjs](scripts/animation-map.mjs)** — Generate JSON animation map from composition for timing inspection.
+- **[scripts/contrast-report.mjs](scripts/contrast-report.mjs)** — WCAG contrast audit: check text/background combinations.
+- **[scripts/package-loader.mjs](scripts/package-loader.mjs)** — Dynamic package/dependency loader for HyperFrames runtimes.
+- **[scripts/extract-audio-data.py](scripts/extract-audio-data.py)** — Extract audio metadata (duration, sample rate, channels) for timeline sync.
+- **[scripts/frame_strip.sh](scripts/frame_strip.sh)** — Extract frame strips from rendered video for visual verification.
+- **[scripts/render_diff.sh](scripts/render_diff.sh)** — Compare renders between versions for regression detection.
+- **[scripts/remotion-tests/](scripts/remotion-tests/)** — Remotion migration test scripts (smoke.sh).
 
 ### make-a-video Supporting References
 - **[references/interview-questions.md](references/interview-questions.md)** — Full question bank by gate for the make-a-video workflow.
@@ -552,10 +586,6 @@ All runtimes register paused, seekable timelines for deterministic rendering.
 - **[references/composition-scaffold.md](references/composition-scaffold.md)** — Scoped-styles + IIFE GSAP boilerplate.
 - **[references/build-checklist.md](references/build-checklist.md)** — Preflight + pre-delivery gates.
 
-### Migration & Conversion
-- **[references/website-to-hyperframes.md](references/website-to-hyperframes.md)** — 7-step URL → video composition conversion.
-- **[references/remotion-to-hyperframes.md](references/remotion-to-hyperframes.md)** — Migrate React Remotion compositions to HTML HyperFrames.
-
 ## Templates
 
 Ready-to-use project scaffolds in `templates/`:
@@ -564,5 +594,6 @@ Ready-to-use project scaffolds in `templates/`:
 - **[templates/sub-composition-template.html](templates/sub-composition-template.html)** — Sub-composition `<template>` wrapper with IIFE and Law 11 duration anchor.
 - **[templates/short-form-9-16-template.html](templates/short-form-9-16-template.html)** — 9:16 vertical video with 4-layer scaffold, face-mode choreography (BOTTOM/FULLSCREEN/HIDDEN), Ken Burns, seam treatment.
 - **[templates/trailer-high-tempo.html](templates/trailer-high-tempo.html)** — 16:9 high-tempo trailer: flash transitions, kinetic text, vignette variants, grid-floor + crosshair (Law 10), multi-scene track layout, GSAP flash hard-kill pattern.
+- **[templates/design-picker.html](templates/design-picker.html)** — Interactive design picker tool for creating design.md visually.
 - **[templates/meta.json](templates/meta.json)** — Project metadata template.
 - **[templates/setup.sh](templates/setup.sh)** — One-command community setup: checks Node/FFmpeg/Chrome, installs HyperFrames CLI + framework skills.
