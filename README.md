@@ -13,7 +13,7 @@ Liên hệ hợp tác: **info@Modos.space**
 ### Cách 1: Từ GitHub repo (khuyên dùng)
 
 ```bash
-hermes skills install https://github.com/<org>/hyperframes-modos/SKILL.md
+hermes skills install https://github.com/sonicleez/hyperframes-modos/SKILL.md
 ```
 
 Agent sẽ tự động:
@@ -25,7 +25,7 @@ Agent sẽ tự động:
 
 ```bash
 # Clone repo
-git clone https://github.com/<org>/hyperframes-modos.git ~/.hermes/skills/hyperframes-modos
+git clone https://github.com/sonicleez/hyperframes-modos.git ~/.hermes/skills/hyperframes-modos
 
 #Hoặc copy từ USB / shared drive
 cp -r /path/to/hyperframes-modos ~/.hermes/skills/hyperframes-modos
@@ -158,7 +158,7 @@ git commit -m "feat: HyperFrames MODOS v1.0.0 — AI Solution Production skill"
 gh repo create <org>/hyperframes-modos --public --source=. --push
 
 # Agent khác cài bằng:
-hermes skills install https://github.com/<org>/hyperframes-modos/SKILL.md
+hermes skills install https://github.com/sonicleez/hyperframes-modos/SKILL.md
 ```
 
 ---
