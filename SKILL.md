@@ -186,10 +186,34 @@ cp ~/.hermes/skills/hyperframes-modos/templates/sub-composition-template.html co
 
 # 3. Xem trước trong trình duyệt
 npx hyperframes preview
+# → Mở http://localhost:3002 — Ctrl+C trong terminal để tắt server khi xong
 
 # 4. Xuất video MP4 (mkdir renders nếu chưa có)
 mkdir -p renders
 npx hyperframes render --quality standard --output renders/final.mp4
+```
+
+**Quan trọng — Dọn dẹp khi bắt project mới:**
+```bash
+# Nếu vừa làm project khác, dọn dẹp TRƯỚC khi init project mới:
+# 1. Tắt preview server (localhost:3002) nếu đang chạy:
+#    Ctrl+C trong terminal đang chạy preview, hoặc:
+kill $(lsof -ti:3002) 2>/dev/null && echo "✅ Đã tắt server localhost:3002" || echo "Server không chạy"
+
+# 2. Xóa cache và renders cũ:
+rm -rf .cache node_modules/.cache
+
+# 3. Rồi mới tạo project mới (hoặc cd sang project mới):
+cd .. && npx hyperframes init new-project && cd new-project
+```
+
+**Khi kết thúc project — tắt server & dọn dẹp:**
+```bash
+# Tắt preview server (localhost:3002)
+kill $(lsof -ti:3002) 2>/dev/null && echo "✅ Server đã tắt" || echo "Server không chạy"
+
+# (Tùy chọn) Dọn renders để tiết kiệm ổ cứng
+rm -rf renders/*.mp4 renders/*.webm
 ```
 
 ### Step 4: Load Only What the Path Needs
@@ -538,6 +562,12 @@ npx hyperframes transcribe <file>  # Whisper word-level timestamps
 npx hyperframes tts                # Text-to-speech (Kokoro-82M)
 npx hyperframes remove-background <file>  # Remove background from video (u2net)
 npx hyperframes doctor             # Check environment (Node, FFmpeg, Chrome)
+
+# === Dọn dẹp & Quản lý server ===
+kill $(lsof -ti:3002)              # Tắt preview server localhost:3002
+npx hyperframes clean              # Xóa cache (nếu có)
+rm -rf .cache node_modules/.cache  # Xóa cache thủ công
+rm -rf renders/*.mp4                # Dọn file renders cũ
 ```
 
 ---

@@ -114,6 +114,10 @@ cp ~/.hermes/skills/hyperframes-modos/templates/trailer-high-tempo.html index.ht
 npx hyperframes preview
 mkdir -p renders
 npx hyperframes render --quality standard --output renders/final.mp4
+
+# Khi xong — TẮT PREVIEW SERVER:
+kill $(lsof -ti:3002) 2>/dev/null && echo "✅ Server đã tắt" || echo "Server không chạy"
+# Hoặc Ctrl+C trong terminal đang chạy preview
 ```
 
 ---
