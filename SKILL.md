@@ -1,7 +1,7 @@
 ---
 name: hyperframes-modos
 description: Modos Media AI Solution Production skill — HyperFrames video creation with onboarding, brand identity intake, template/style selection, and 4 production paths (make-a-video, short-form, trailer, developer). Use when creating any HTML-based video content, adding captions, generating TTS, building short-form vertical videos, or producing a complete video from concept to MP4.
-version: 1.3.0
+version: 1.3.1
 author: Modos Media
 license: MIT
 metadata:
@@ -21,6 +21,15 @@ Combines the **official HyperFrames framework** (heygen-com/hyperframes — mult
 **What is HyperFrames?** HyperFrames is an open-source HTML-native video framework. You write plain HTML + CSS + GSAP, and the framework renders it as broadcast-quality MP4. Instead of timeline editors or keyframe GUIs, you describe animations in code — every composition is deterministic, inspectable, and version-controllable. Think of it as "video-as-code": `npx hyperframes init my-project`, edit `index.html`, preview in browser, render to MP4. No video editor needed.
 
 **Setup:** `npx skills add heygen-com/hyperframes` installs the framework skills. This skill layers on top — Modos onboarding, brand identity, motion philosophy, short-form patterns, AI gates, and quality checks the framework doesn't include.
+
+### Pitfalls
+
+- **Preview server stays running!** `npx hyperframes preview` starts a persistent server on localhost:3002. It does NOT auto-stop when you close the browser tab. ALWAYS kill it when done: `kill $(lsof -ti:3002) 2>/dev/null` or Ctrl+C in the terminal. Before starting a new project, kill any existing server on port 3002 first.
+- **Don't use placeholder paths in commands.** Replace `<template>.html` with the actual filename for the user's path. Beginners can't fill in placeholders. Provide the explicit `cp` command for each path type.
+- **Avoid silent-failure commands** (`2>/dev/null`, `| head -1`). These hide errors from beginners. Use `which ffmpeg || echo "⚠️ not installed"` instead of `ffmpeg -version 2>/dev/null`.
+- **Don't duplicate files.** When merging two source repos, check for 100% duplicates before copying. Use `diff` or `md5` to verify. Duplicate files cause confusion about which is authoritative.
+- **Always verify referenced files exist.** After a merge or rename, grep all `[text](path)` links and confirm each target file exists. Broken links are the #1 merge artifact.
+- **Fix all path references after rename.** When renaming a skill from X to Y, search ALL files (not just SKILL.md) for the old name. Setup scripts, onboarding docs, and template files all carry the old name.
 
 ---
 
@@ -81,6 +90,15 @@ npx hyperframes --version || echo "⚠️  Chạy 'npx hyperframes init first-pr
 ```
 
 Nếu tất cả đều OK, tiếp tục Step 1. Nếu thiếu, cài theo hướng dẫn trên rồi quay lại.
+
+**TRƯỚC khi bắt project mới** — nếu vừa làm project khác, dọn dẹp trước:
+```bash
+# Tắt preview server cũ nếu đang chạy (localhost:3002)
+kill $(lsof -ti:3002) 2>/dev/null && echo "✅ Đã tắt server cũ" || echo "Không có server cũ"
+
+# Xóa cache (tránh lỗi stale từ project trước)
+cd /path/to/old-project && rm -rf .cache node_modules/.cache
+```
 
 ### Step 1: Chọn hướng (Pick a Path)
 
@@ -246,6 +264,29 @@ Additionally, if brand info was provided in Step 2:
 | developer | Ask what they want to build, suggest relevant reference subset |
 
 All paths: brand info from Step 2 feeds directly into Gate 3 (style intake) / composition authoring. Skip re-asking what the user already provided.
+
+### Step 6: Kết thúc Project — Dọn dẹp (Project Cleanup)
+
+**MANDATORY** khi user nói "xong", "kết thúc", "render xong", hoặc chuyển sang project khác:
+
+1. **Tắt preview server** (localhost:3002) — server này chạy liên tục và không tự tắt:
+   ```bash
+   kill $(lsof -ti:3002) 2>/dev/null && echo "✅ Server đã tắt" || echo "Server không chạy"
+   ```
+   Hoặc nhấn **Ctrl+C** trong terminal đang chạy `npx hyperframes preview`.
+
+2. **Hỏi user** có muốn dọn file renders không:
+   > **Bạn có muốn dọn file renders cũ để tiết kiệm ổ cứng không?** (renders/*.mp4, renders/*.webm)
+
+3. **Nếu user muốn dọn:**
+   ```bash
+   rm -rf renders/*.mp4 renders/*.webm
+   echo "✅ Đã dọn renders"
+   ```
+
+4. **Nếu chuyển sang project mới** — lặp lại Step 0 (kiểm tra môi trường + tắt server cũ).
+
+**Tại sao phải tắt server?** `npx hyperframes preview` chạy server Node.js trên port 3002. Server này **không tự tắt** sau khi render xong — nó tiếp tục chạy và tiêu thụ RAM/CPU cho đến khi tắt bằng Ctrl+C hoặc `kill`. Nếu làm nhiều project mà không tắt, các server cũ sẽ tích lũy và làm chậm máy.
 
 ---
 

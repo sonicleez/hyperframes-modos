@@ -289,3 +289,28 @@ Each path has a natural first action. Don't ask again — just guide:
 | developer | Ask what they want to build, then suggest loading the relevant reference subset |
 
 All paths: brand info from Step 2 feeds directly into Gate 3 (style intake) / composition authoring. Skip re-asking what the user already provided.
+
+---
+
+## Step 7: Kết thúc Project — Dọn dẹp (Project Cleanup)
+
+**MANDATORY** khi user nói "xong", "kết thúc", "render xong", hoặc chuyển sang project khác:
+
+1. **Tắt preview server** (localhost:3002) — server này chạy liên tục và KHÔNG tự tắt:
+   ```bash
+   kill $(lsof -ti:3002) 2>/dev/null && echo "✅ Server đã tắt" || echo "Server không chạy"
+   ```
+   Hoặc nhấn **Ctrl+C** trong terminal đang chạy `npx hyperframes preview`.
+
+2. **Hỏi user** có muốn dọn file renders:
+   > Bạn có muốn dọn file renders cũ để tiết kiệm ổ cứng không? (renders/*.mp4, renders/*.webm)
+
+3. **Nếu user muốn dọn:**
+   ```bash
+   rm -rf renders/*.mp4 renders/*.webm
+   echo "✅ Đã dọn renders"
+   ```
+
+4. **Nếu chuyển sang project mới** — quay lại Step 0 (kiểm tra môi trường + tắt server cũ).
+
+**Tại sao phải tắt server?** `npx hyperframes preview` là server Node.js chạy liên tục trên port 3002. Nó **không tự tắt** sau khi render — tiếp tục tiêu thụ RAM/CPU cho đến khi `kill` hoặc Ctrl+C. Nhiều project = nhiều server = máy chậm dần.
